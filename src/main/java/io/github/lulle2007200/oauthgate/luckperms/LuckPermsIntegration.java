@@ -9,6 +9,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.data.NodeMap;
 import net.luckperms.api.model.user.User;
@@ -111,18 +113,20 @@ public class LuckPermsIntegration implements ILuckPermsIntegration {
 		@Override
 		public void setLinked(boolean linked) {
 			// TODO: name for role indicating linked profile
-			String role = luckPerms.mapRole("oauthgate_linked");
+			String role = ("oauthgate_linked");
 			if (linked) {
-				addRoleUnmapped(user.data(), role, null);
+				addRoleUnmapped(user.data(), role, Optional.empty());
 			} else {
 				removeRoleUnmapped(user.data(), role);
 			}
 		}} 
 
 	private final LuckPerms luckPerms;
+	private final Logger logger;
 
-	public LuckPermsIntegration(LuckPerms luckPerms) {
+	public LuckPermsIntegration(LuckPerms luckPerms, Logger logger) {
 		this.luckPerms = Objects.requireNonNull(luckPerms);
+		this.logger = Objects.requireNonNull(logger);
 	}
 
 	@Override

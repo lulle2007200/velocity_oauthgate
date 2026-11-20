@@ -82,7 +82,7 @@ public final class OAuthGatePlugin {
 
 		ILuckPermsIntegration luckPerms;
 		if (proxyServer.getPluginManager().isLoaded("luckperms")) {
-			luckPerms = new LuckPermsIntegration(LuckPermsProvider.get());
+			luckPerms = new LuckPermsIntegration(LuckPermsProvider.get(), logger);
 		} else {
 			luckPerms = new NoLuckPermsIntegration();
 		}
