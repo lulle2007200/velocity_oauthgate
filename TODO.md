@@ -1,0 +1,13 @@
+- Configurable refresh margin
+- Configurable messages
+- Configurable oidc <-> luckperms role mapping per provider
+- Properly implement bypassing
+	- Permission based: Check for oauthgate_bypass permission, if available, may be set by luckperms for a player
+	- Abstract away bypassing into special OidcClient 
+		- This requires changes to link/login: link/login always returns an url that is displayed to the user to click and log in.
+		  This is not required for bypassing. 
+- Configuration setting to not require authentication at all to join 
+- Commands to link/unlink/refresh/etc
+- Basic permission system (e.g. role X required to join backend Y) for when luckperms not installed
+- Make KickOauthGate a policy instead of subclass of OauthGate
+- LimboOauthGate

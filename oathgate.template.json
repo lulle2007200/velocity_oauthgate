@@ -1,0 +1,73 @@
+{
+  // URL to listen on for OIDC callbacks etc.
+  // Required
+  // Following URLs are used:
+  // authCallbackBaseUrl/callback for listening for OIDC callbacks
+  // authCallbackBaseUrl/l/[short code] for shortening user-facing URLs
+  // authCallbackBaseUrl/auth/[short code]/[provider index] for staring the auth flow for request [short code] with the provider [provider index]
+  "authCallbackBaseUrl": "http://auth.minecraft.example.com",
+  // OIDC providers
+  // Required
+  // Atleast one provider must be specified
+  "providers": {
+    // Provider display name
+    "Example Provider": {
+      // OIDC provider URL
+      //Required
+      "providerUrl": "http://idp.example.com",
+      // OIDC provider client URL
+      // Required
+      "clientId": "example_provider",
+      // OIDC scopes to request
+      // Optional
+      // Default: openid, groups, profile, offline_access
+      // At minium, openid is required.
+      // For auto-refreshing sessions, offline_access is required.
+      "scopes": [
+        "openid",
+        "groups",
+        "profile",
+        "offline_access"
+      ],
+      // OIDC grant for roles
+      // Optional
+      // If specified, the string-list claim is used to assign roles to players
+      "rolesClaim": "groups"
+    }
+  },
+  // Session store type
+  // Allowed values: 
+  // memory: Sessions and account links are stored in memory only, not persistent
+  // file: Sessions and account links are stored in an unencrypted json file
+  // Default: memory
+  // Optional
+  "sessionStoreType": "file",
+  // Path to the session file when sessionStoreType is "file".
+  // If not set, defaults to "oauthgate-sessions.json" in the working directory.
+  // Optional
+  "sessionFilePath": "oauthgate-sessions.json",
+  // Login timeout in seconds
+  // Optional
+  // Default: 5min
+  "loginTimeout": 300,
+  // Maximum session lifetime in seconds. Players are re-authenticated after this time.
+  // If not specified, and a players token does not have an expiration time, sessions stay valid indefinitely, until next login.
+  // Optional
+  // Default: 12h
+  "maxSessionLifetime": 43200,
+  // Users that may bypass OIDC auth
+  // Optional
+  "bypassers": {
+    // Player UUID
+    "3f2b8c1e-5a4d-4c0e-9b7a-1d2e3f4a5b6c": {
+      // Roles to assign
+      // Optional
+      "roles": [
+        "survival",
+        "moderator"
+      ]
+    }
+  },
+  // Config version. DO NOT EDIT
+  "version": 1
+}
