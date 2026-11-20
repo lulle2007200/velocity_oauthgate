@@ -13,10 +13,11 @@ repositories {
 dependencies {
     compileOnly(libs.velocity)
     compileOnly(libs.luckperms)
+    compileOnly(libs.guava)
+    
     annotationProcessor(libs.velocity)
     
     implementation(libs.nimbus.oauth2.oidc.sdk)
-    implementation(libs.guava)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.gson)
