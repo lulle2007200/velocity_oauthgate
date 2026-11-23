@@ -21,6 +21,11 @@ public class ConfigDtoV1 {
 
 	// Optional settings
 
+	// Address/port to listen on
+	// Optional
+	// Default: 0.0.0.0:80
+	public String bindAddress = "0.0.0.0:80";
+
 	// Session store type
 	// Allowed values:
 	// file: Sessions/account links are stored in a json file

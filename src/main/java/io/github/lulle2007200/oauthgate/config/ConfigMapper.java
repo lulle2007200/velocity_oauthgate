@@ -1,5 +1,6 @@
 package io.github.lulle2007200.oauthgate.config;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.net.HostAndPort;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
@@ -52,6 +54,19 @@ public final class ConfigMapper implements IConfigMapper<Config, ConfigDtoV1> {
 			authServerBaseUrl = new URI(dto.authCallbackBaseUrl);
 		} catch (URISyntaxException ex) {
 			throw new ConfigException("Invalid auth server base url", ex);
+		}
+
+		InetSocketAddress bindAddress;
+		try {
+			HostAndPort hostAndPort;
+			if (dto.bindAddress != null) {
+				hostAndPort = HostAndPort.fromString(dto.bindAddress);
+			} else {
+				hostAndPort = HostAndPort.fromParts("0.0.0.0", 80);
+			}
+			bindAddress = new InetSocketAddress(hostAndPort.getHost(), hostAndPort.getPort());
+		} catch (IllegalArgumentException ex) {
+			throw new ConfigException("Invalid bind address", ex);
 		}
 
 		if (dto.providers == null) {
@@ -117,6 +132,7 @@ public final class ConfigMapper implements IConfigMapper<Config, ConfigDtoV1> {
                           loginTimeout,
                           maxSessionLifetime,
 		                  authServerBaseUrl,
+		                  bindAddress,
 		                  providers,
 		                  bypassers,
 		                  Optional.ofNullable(dto.sessionFilePath));
@@ -126,6 +142,9 @@ public final class ConfigMapper implements IConfigMapper<Config, ConfigDtoV1> {
 	public ConfigDtoV1 toDto(Config config) {
 		ConfigDtoV1 dto = new ConfigDtoV1();
 		dto.authCallbackBaseUrl = config.authServerBaseUrl().toString();
+
+		InetSocketAddress bindAddress = config.bindAddress();
+		dto.bindAddress = HostAndPort.fromParts(bindAddress.getHostString(), bindAddress.getPort()).toString();
 
 		Map<String, ProviderConfigDtoV1> providers = new HashMap<>();
 		for(OidcProvider provider : config.providers()) {

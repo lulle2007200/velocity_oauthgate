@@ -32,18 +32,19 @@ import com.sun.net.httpserver.HttpServer;
 public class OidcExchangeCodeProvider implements IOidcExchangeCodeProvider {
     public static class Builder {
         private URI baseUrl;
-        private Duration requestTtl = Duration.ofSeconds(120);
+        private Duration loginTimeout = Duration.ofSeconds(120);
         private HttpClient httpClient;
         private Duration readTimeout = Duration.ZERO;
         private Duration connectTimeout = Duration.ZERO;
+        private InetSocketAddress bindAddress = new InetSocketAddress("0.0.0.0", 80);
 
         public Builder withHttpClient(HttpClient httpClient) {
             this.httpClient = Objects.requireNonNull(httpClient);
             return this;
         }
 
-        public Builder withRequestTtl(Duration requestTtl) {
-            this.requestTtl = validateDuration(requestTtl);
+        public Builder withLoginTimeout(Duration loginTimeout) {
+            this.loginTimeout = validateDuration(loginTimeout);
             return this;
         }
 
@@ -62,9 +63,15 @@ public class OidcExchangeCodeProvider implements IOidcExchangeCodeProvider {
             return this;
         }
 
+        public Builder withBindAddress(InetSocketAddress bindAddress) {
+            this.bindAddress = Objects.requireNonNull(bindAddress);
+            return this;
+        }
+
         public OidcExchangeCodeProvider build() {
-            return new OidcExchangeCodeProvider(baseUrl, 
-                                                requestTtl, 
+            return new OidcExchangeCodeProvider(baseUrl,
+                                                bindAddress,
+                                                loginTimeout, 
                                                 httpClient, 
                                                 readTimeout, 
                                                 connectTimeout);
@@ -214,6 +221,7 @@ public class OidcExchangeCodeProvider implements IOidcExchangeCodeProvider {
     private final HttpServer server;
 
     public OidcExchangeCodeProvider(URI baseUrl,
+                                    InetSocketAddress bindAddress,
                                     Duration requestTtl,
                                     HttpClient httpClient,
                                     Duration readTimeout,
@@ -249,7 +257,7 @@ public class OidcExchangeCodeProvider implements IOidcExchangeCodeProvider {
         this.authBaseUrl = baseUrl.resolve("auth/");
 
         try {
-            this.server = HttpServer.create(new InetSocketAddress(baseUrl.getHost(), baseUrl.getPort()), 0);
+            this.server = HttpServer.create(Objects.requireNonNull(bindAddress), 0);
         } catch (IOException ex) {
             throw new OidcException("Failed to start HTTP server", ex);
         }

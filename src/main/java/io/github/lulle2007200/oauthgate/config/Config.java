@@ -1,5 +1,6 @@
 package io.github.lulle2007200.oauthgate.config;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
@@ -16,6 +17,7 @@ public record Config (
 	Duration loginTimeout,
 	Optional<Duration> maxSessionLifetime,
 	URI authServerBaseUrl,
+	InetSocketAddress bindAddress,
 	List<OidcProvider> providers,
 	Map<UUID, Set<String>> bypassers,
 	Optional<String> sessionFilePath

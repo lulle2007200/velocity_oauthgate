@@ -104,11 +104,15 @@ public final class OAuthGatePlugin {
 				throw new AssertionError();
 		}
 
-		OidcExchangeCodeProvider exchangeCodeProvider = new OidcExchangeCodeProvider(config.authServerBaseUrl(), 
-		                                                                             config.loginTimeout(), 
-		                                                                             httpClient, 
-		                                                                             readTimeout, 
-		                                                                             connectTimeout);
+
+		OidcExchangeCodeProvider exchangeCodeProvider = OidcExchangeCodeProvider.newBuilder()
+			.withBaseUrl(config.authServerBaseUrl())
+			.withBindAddress(config.bindAddress())
+			.withLoginTimeout(config.loginTimeout())
+			.withHttpClient(httpClient)
+			.withReadTimeout(readTimeout)
+			.withConnectTimeout(connectTimeout)
+			.build();
 
 		OidcAuthService authService = OidcAuthService.newBuilder()
 			.withConnectTimeout(connectTimeout)
